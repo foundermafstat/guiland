@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+/* CSS переменные для тем */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --card-bg-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --border-color: #404040;
+  --card-bg-gradient: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Стили для кнопок в хедере */
+.header-button {
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.header-button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-1px);
+}
+
+/* Стили для кнопок в светлой теме */
+.light .ant-btn-default {
+  color: #000000 !important;
+  background: #ffffff !important;
+  border: 1px solid #d9d9d9 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.light .ant-btn-default:hover {
+  color: #000000 !important;
+  background: #f5f5f5 !important;
+  border-color: #40a9ff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Стили для кнопок в темной теме */
+.dark .ant-btn-default {
+  color: #ffffff !important;
+  background: #2d2d2d !important;
+  border: 1px solid #404040 !important;
+}
+
+.dark .ant-btn-default:hover {
+  color: #ffffff !important;
+  background: #404040 !important;
+  border-color: #40a9ff !important;
+}
+
+/* Стили для кнопок в карточке баланса */
+.balance-card .ant-btn-default {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px);
+}
+
+.balance-card .ant-btn-default:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Стили для карточек с градиентом */
+.card-gradient {
+  background: var(--card-bg-gradient);
+  border: none;
+  box-shadow: var(--card-shadow);
+  color: var(--text-primary);
+}
+
+/* Стили для sticky хедера */
+.ant-layout-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+/* Корректировка высоты контента для хедера */
+.ant-layout-content {
+  min-height: calc(100vh - 64px - 70px); /* 100vh - header - footer */
+}
+
+/* Стили для логотипа в хедере */
+.header-logo {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
+} 

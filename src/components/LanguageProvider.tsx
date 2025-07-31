@@ -1,0 +1,476 @@
+'use client';
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+type Language = 'en' | 'ru';
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+// Переводы
+const translations = {
+  en: {
+    // Header
+    'header.connect_wallet': 'Connect Wallet',
+    'header.disconnect': 'Disconnect',
+    'header.profile': 'Profile',
+    'header.demo_mode': 'Demo Mode',
+    
+    // Wallet options
+    'wallet.petra': 'Petra Wallet',
+    'wallet.martian': 'Martian Wallet',
+    'wallet.pontem': 'Pontem Wallet',
+    'wallet.nightly': 'Nightly Wallet',
+    'wallet.demo': 'Demo Mode',
+    
+    // Network
+    'network.testnet': 'Testnet',
+    'network.mainnet': 'Mainnet',
+    
+    // Footer
+    'footer.copyright': 'GUILAND NFT Platform ©2024',
+    
+    // Landing page
+    'landing.title': 'Welcome to GUILAND',
+    'landing.subtitle': 'NFT Gaming Platform on Aptos',
+    'landing.start_button': 'Get Started',
+    'landing.connect_wallet': 'Connect Wallet',
+    'landing.start_game': 'Start Game',
+    'landing.learn_more': 'Learn More',
+    'landing.hero_subtitle': 'NFT Gaming World on Aptos Blockchain',
+    'landing.hero_description': 'Create, trade and battle with unique NFTs in the exciting world of GUILAND. Join thousands of players in the first decentralized NFT game on Aptos.',
+    'landing.ready_adventure': 'Ready to start your adventure?',
+    'landing.join_revolution': 'Join GUILAND today and become part of the NFT gaming revolution',
+    'landing.features_title': '🚀 GUILAND Features',
+    'landing.features_subtitle': 'Discover the unique capabilities of our platform',
+    'landing.mechanics_title': '🎮 Game Mechanics',
+    'landing.mechanics_subtitle': 'Immerse yourself in exciting gameplay',
+    'landing.stats_players': 'Active Players',
+    'landing.stats_nfts': 'Created NFTs',
+    'landing.stats_battles': 'Battles Fought',
+    'landing.stats_collections': 'Unique Collections',
+    'landing.feature_nft_creation': 'NFT Creation',
+    'landing.feature_nft_desc': 'Create unique NFTs with customization and royalties',
+    'landing.feature_battles': 'Battles',
+    'landing.feature_battles_desc': 'Fight other players in epic battles',
+    'landing.feature_achievements': 'Achievements',
+    'landing.feature_achievements_desc': 'Earn achievements and increase your rank',
+    'landing.feature_economy': 'Economy',
+    'landing.feature_economy_desc': 'Trade NFTs and earn from the gaming economy',
+    'landing.mechanic_levels': 'Level System',
+    'landing.mechanic_levels_desc': 'Level up by gaining experience from in-game actions',
+    'landing.mechanic_rating': 'Rating System',
+    'landing.mechanic_rating_desc': 'Compete with other players in the global ranking',
+    'landing.mechanic_collections': 'NFT Collections',
+    'landing.mechanic_collections_desc': 'Collect unique collections and get bonuses',
+    'landing.mechanic_pvp': 'PvP Battles',
+    'landing.mechanic_pvp_desc': 'Fight in real-time with other players',
+    'landing.testimonials_title': '💬 What players say',
+    'landing.testimonials_subtitle': 'Reviews from our satisfied players',
+    'landing.testimonial_1_name': 'Alex',
+    'landing.testimonial_1_role': 'Player',
+    'landing.testimonial_1_text': 'Great game! The NFT system works perfectly, and the battles are very exciting.',
+    'landing.testimonial_2_name': 'Maria',
+    'landing.testimonial_2_role': 'Collector',
+    'landing.testimonial_2_text': 'I love collecting NFTs in this game. Each token is unique and has its own story.',
+    'landing.testimonial_3_name': 'Dmitry',
+    'landing.testimonial_3_role': 'Trader',
+    'landing.testimonial_3_text': 'Great game economy. You can earn well from NFT trading.',
+    
+    // Game page
+    'game.title': 'GUILAND Game',
+    'game.play_button': 'Play Game',
+    'game.welcome': 'Welcome to GUILAND',
+    'game.connect_description': 'Connect your Web3 wallet to create and manage NFTs',
+    'game.supported_wallets': 'Supported wallets: Petra, Martian, Pontem, Nightly',
+    'game.select_wallet': 'Select Wallet',
+    'game.create_nft': '🎨 Create NFT',
+    'game.balance': '💰 Balance',
+    'game.refresh_balance': 'Refresh Balance',
+    'game.wallet_info': '📊 Wallet Information',
+    'game.wallet_address': 'Wallet Address:',
+    'game.wallet_name': 'Wallet:',
+    'game.network': 'Network:',
+    'game.status': 'Status:',
+    'game.connected': 'Connected ✅',
+    'game.open_profile': 'Open Profile',
+    'game.my_nfts': '🖼️ My NFTs',
+    
+    // Profile page
+    'profile.title': 'Profile',
+    'profile.address': 'Address',
+    'profile.balance': 'Balance',
+    'profile.player': 'Player #',
+    'profile.wallet_address': 'Wallet Address:',
+    'profile.network': 'Network:',
+    'profile.level': 'Level:',
+    'profile.address_copied': 'Address copied to clipboard',
+    'profile.load_error': 'Error loading player data',
+    'profile.total_nfts': 'Total NFTs',
+    'profile.collections': 'Collections',
+    'profile.victories': 'Victories',
+    'profile.achievements': 'Achievements',
+    'profile.my_nfts': '🖼️ My NFTs',
+    'profile.battles': '⚔️ Battles',
+    'profile.battle_stats': 'Battle Statistics',
+    'profile.wins': 'Wins:',
+    'profile.losses': 'Losses:',
+    'profile.win_rate': 'Win Rate:',
+    'profile.recent_battles': 'Recent Battles',
+    'profile.opponent': 'Player #',
+    'profile.victory': 'Victory',
+    'profile.defeat': 'Defeat',
+    'profile.achievements_tab': '🏆 Achievements',
+    'profile.first_nft': 'First NFT',
+    'profile.first_nft_desc': 'Create your first NFT',
+    'profile.collector': 'Collector',
+    'profile.collector_desc': 'Collect 5 unique NFTs',
+    'profile.warrior': 'Warrior',
+    'profile.warrior_desc': 'Win 10 battles',
+    'profile.legend': 'Legend',
+    'profile.legend_desc': 'Reach level 10',
+    'profile.master': 'Master',
+    'profile.master_desc': 'Create 50 NFTs',
+    'profile.ranks': {
+      'Новичок': 'Novice',
+      'Опытный': 'Experienced',
+      'Ветеран': 'Veteran',
+      'Мастер': 'Master',
+      'Легенда': 'Legend'
+    },
+    
+    // NFT components
+    'nft.mint': 'Mint NFT',
+    'nft.gallery': 'NFT Gallery',
+    'nft.no_nfts': 'No NFTs found',
+    'nft.connect_wallet': 'Connect wallet to create NFT',
+    'nft.wallet': 'Wallet:',
+    'nft.network': 'Network:',
+    'nft.name': 'NFT Name',
+    'nft.name_placeholder': 'My unique NFT',
+    'nft.name_required': 'Enter NFT name',
+    'nft.description': 'Description',
+    'nft.description_placeholder': 'Description of your NFT...',
+    'nft.description_required': 'Enter NFT description',
+    'nft.uri': 'Metadata URI',
+    'nft.uri_placeholder': 'https://example.com/metadata.json',
+    'nft.uri_required': 'Enter metadata URI',
+    'nft.upload_file': 'Or upload file',
+    'nft.upload': 'Upload',
+    'nft.create_via_wallet': 'Create NFT via wallet',
+    'nft.royalty_note': '* Royalty: 5% from sales',
+    'nft.connect_first': 'Connect wallet first!',
+    'nft.success_created': 'NFT successfully created! Hash:',
+    'nft.error_creating': 'Error creating NFT:',
+    'nft.unknown_error': 'Unknown error',
+    'nft.connect_to_view': 'Connect wallet to view NFTs',
+    'nft.loading': 'Loading NFTs...',
+    'nft.your_nfts': 'Your NFTs',
+    'nft.refresh': 'Refresh',
+    'nft.no_nfts_yet': 'You have no NFTs yet',
+    'nft.view': 'View',
+    'nft.transfer': 'Transfer',
+    'nft.burn': 'Burn',
+    'nft.token_id': 'Token ID:',
+    'nft.collection': 'GUILAND NFT Collection',
+    'nft.quantity': 'Quantity:',
+    'nft.wallet_no_transactions': 'Wallet does not support transactions',
+    'nft.transfer_success': 'NFT successfully transferred!',
+    'nft.transfer_error': 'Error transferring NFT:',
+    'nft.burn_success': 'NFT successfully burned!',
+    'nft.burn_error': 'Error burning NFT:',
+    'nft.load_error': 'Error loading NFTs',
+    'nft.token_data_error': 'Error getting token data:',
+    'nft.castle_description': 'Majestic castle in the world of GUILAND',
+    'nft.dragon_description': 'Guardian of the GUILAND kingdom',
+    'nft.sword_description': 'Legendary sword with magical properties',
+    
+    // Common
+    'common.loading': 'Loading...',
+    'common.error': 'Error',
+    'common.success': 'Success',
+    'common.cancel': 'Cancel',
+    'common.save': 'Save',
+    'common.delete': 'Delete',
+    'common.edit': 'Edit',
+    'common.view': 'View',
+    'common.back': 'Back',
+    'common.next': 'Next',
+    'common.previous': 'Previous',
+    'common.close': 'Close',
+    'common.open': 'Open',
+    'common.search': 'Search',
+    'common.filter': 'Filter',
+    'common.sort': 'Sort',
+    'common.refresh': 'Refresh',
+    'common.download': 'Download',
+    'common.upload': 'Upload',
+    'common.export': 'Export',
+    'common.import': 'Import',
+    'common.settings': 'Settings',
+    'common.help': 'Help',
+    'common.about': 'About',
+    'common.contact': 'Contact',
+    'common.privacy': 'Privacy',
+    'common.terms': 'Terms',
+    'common.language': 'Language',
+    'common.install': 'Install',
+    'common.wallet': 'wallet',
+    'common.and': 'and',
+    'common.page': 'page',
+  },
+  ru: {
+    // Header
+    'header.connect_wallet': 'Подключить кошелек',
+    'header.disconnect': 'Отключить',
+    'header.profile': 'Профиль',
+    'header.demo_mode': 'Демо режим',
+    
+    // Wallet options
+    'wallet.petra': 'Petra Wallet',
+    'wallet.martian': 'Martian Wallet',
+    'wallet.pontem': 'Pontem Wallet',
+    'wallet.nightly': 'Nightly Wallet',
+    'wallet.demo': 'Демо режим',
+    
+    // Network
+    'network.testnet': 'Тестнет',
+    'network.mainnet': 'Мейннет',
+    
+    // Footer
+    'footer.copyright': 'GUILAND NFT Платформа ©2024',
+    
+    // Landing page
+    'landing.title': 'Добро пожаловать в GUILAND',
+    'landing.subtitle': 'NFT Игровая платформа на Aptos',
+    'landing.start_button': 'Начать',
+    'landing.connect_wallet': 'Подключить кошелек',
+    'landing.start_game': 'Начать игру',
+    'landing.learn_more': 'Узнать больше',
+    'landing.hero_subtitle': 'Мир NFT игр на блокчейне Aptos',
+    'landing.hero_description': 'Создавайте, торгуйте и сражайтесь с уникальными NFT в захватывающем мире GUILAND. Присоединяйтесь к тысячам игроков в первой децентрализованной NFT игре на Aptos.',
+    'landing.ready_adventure': '🚀 Готовы начать приключение?',
+    'landing.join_revolution': 'Присоединяйтесь к GUILAND сегодня и станьте частью революции в мире NFT игр',
+    'landing.features_title': '🚀 Особенности GUILAND',
+    'landing.features_subtitle': 'Откройте для себя уникальные возможности нашей платформы',
+    'landing.mechanics_title': '🎮 Игровые механики',
+    'landing.mechanics_subtitle': 'Погрузитесь в захватывающий игровой процесс',
+    'landing.stats_players': 'Активных игроков',
+    'landing.stats_nfts': 'Созданных NFT',
+    'landing.stats_battles': 'Проведенных битв',
+    'landing.stats_collections': 'Уникальных коллекций',
+    'landing.feature_nft_creation': 'Создание NFT',
+    'landing.feature_nft_desc': 'Создавайте уникальные NFT с кастомизацией и роялти',
+    'landing.feature_battles': 'Битвы',
+    'landing.feature_battles_desc': 'Сражайтесь с другими игроками в эпических битвах',
+    'landing.feature_achievements': 'Достижения',
+    'landing.feature_achievements_desc': 'Зарабатывайте достижения и повышайте свой ранг',
+    'landing.feature_economy': 'Экономика',
+    'landing.feature_economy_desc': 'Торгуйте NFT и зарабатывайте на игровой экономике',
+    'landing.mechanic_levels': 'Система уровней',
+    'landing.mechanic_levels_desc': 'Повышайте уровень, получая опыт за действия в игре',
+    'landing.mechanic_rating': 'Рейтинговая система',
+    'landing.mechanic_rating_desc': 'Соревнуйтесь с другими игроками в глобальном рейтинге',
+    'landing.mechanic_collections': 'Коллекции NFT',
+    'landing.mechanic_collections_desc': 'Собирайте уникальные коллекции и получайте бонусы',
+    'landing.mechanic_pvp': 'PvP битвы',
+    'landing.mechanic_pvp_desc': 'Сражайтесь в реальном времени с другими игроками',
+    'landing.testimonials_title': '💬 Что говорят игроки',
+    'landing.testimonials_subtitle': 'Отзывы от наших довольных игроков',
+    'landing.testimonial_1_name': 'Алексей',
+    'landing.testimonial_1_role': 'Игрок',
+    'landing.testimonial_1_text': 'Отличная игра! NFT система работает идеально, а битвы очень увлекательные.',
+    'landing.testimonial_2_name': 'Мария',
+    'landing.testimonial_2_role': 'Коллекционер',
+    'landing.testimonial_2_text': 'Люблю собирать NFT в этой игре. Каждый токен уникален и имеет свою историю.',
+    'landing.testimonial_3_name': 'Дмитрий',
+    'landing.testimonial_3_role': 'Трейдер',
+    'landing.testimonial_3_text': 'Отличная экономика игры. Можно хорошо заработать на торговле NFT.',
+    
+    // Game page
+    'game.title': 'GUILAND Игра',
+    'game.play_button': 'Играть',
+    'game.welcome': 'Добро пожаловать в GUILAND',
+    'game.connect_description': 'Подключите Web3 кошелек для создания и управления NFT',
+    'game.supported_wallets': 'Поддерживаемые кошельки: Petra, Martian, Pontem, Nightly',
+    'game.select_wallet': 'Выбрать кошелек',
+    'game.create_nft': '🎨 Создать NFT',
+    'game.balance': '💰 Баланс',
+    'game.refresh_balance': 'Обновить баланс',
+    'game.wallet_info': '📊 Информация о кошельке',
+    'game.wallet_address': 'Адрес кошелька:',
+    'game.wallet_name': 'Кошелек:',
+    'game.network': 'Сеть:',
+    'game.status': 'Статус:',
+    'game.connected': 'Подключен ✅',
+    'game.open_profile': 'Открыть профиль',
+    'game.my_nfts': '🖼️ Мои NFT',
+    
+    // Profile page
+    'profile.title': 'Профиль',
+    'profile.address': 'Адрес',
+    'profile.balance': 'Баланс',
+    'profile.player': 'Игрок #',
+    'profile.wallet_address': 'Адрес кошелька:',
+    'profile.network': 'Сеть:',
+    'profile.level': 'Уровень:',
+    'profile.address_copied': 'Адрес скопирован в буфер обмена',
+    'profile.load_error': 'Ошибка загрузки данных игрока',
+    'profile.total_nfts': 'Всего NFT',
+    'profile.collections': 'Коллекции',
+    'profile.victories': 'Победы',
+    'profile.achievements': 'Достижения',
+    'profile.my_nfts': '🖼️ Мои NFT',
+    'profile.battles': '⚔️ Битвы',
+    'profile.battle_stats': 'Статистика битв',
+    'profile.wins': 'Победы:',
+    'profile.losses': 'Поражения:',
+    'profile.win_rate': 'Процент побед:',
+    'profile.recent_battles': 'Последние битвы',
+    'profile.opponent': 'Игрок #',
+    'profile.victory': 'Победа',
+    'profile.defeat': 'Поражение',
+    'profile.achievements_tab': '🏆 Достижения',
+    'profile.first_nft': 'Первый NFT',
+    'profile.first_nft_desc': 'Создайте свой первый NFT',
+    'profile.collector': 'Коллекционер',
+    'profile.collector_desc': 'Соберите 5 уникальных NFT',
+    'profile.warrior': 'Воин',
+    'profile.warrior_desc': 'Выиграйте 10 битв',
+    'profile.legend': 'Легенда',
+    'profile.legend_desc': 'Достигните 10 уровня',
+    'profile.master': 'Мастер',
+    'profile.master_desc': 'Создайте 50 NFT',
+    'profile.ranks': {
+      'Новичок': 'Новичок',
+      'Опытный': 'Опытный',
+      'Ветеран': 'Ветеран',
+      'Мастер': 'Мастер',
+      'Легенда': 'Легенда'
+    },
+    
+    // NFT components
+    'nft.mint': 'Создать NFT',
+    'nft.gallery': 'NFT Галерея',
+    'nft.no_nfts': 'NFT не найдены',
+    'nft.connect_wallet': 'Подключите кошелек для создания NFT',
+    'nft.wallet': 'Кошелек:',
+    'nft.network': 'Сеть:',
+    'nft.name': 'Название NFT',
+    'nft.name_placeholder': 'Мой уникальный NFT',
+    'nft.name_required': 'Введите название NFT',
+    'nft.description': 'Описание',
+    'nft.description_placeholder': 'Описание вашего NFT...',
+    'nft.description_required': 'Введите описание NFT',
+    'nft.uri': 'URI метаданных',
+    'nft.uri_placeholder': 'https://example.com/metadata.json',
+    'nft.uri_required': 'Введите URI метаданных',
+    'nft.upload_file': 'Или загрузите файл',
+    'nft.upload': 'Загрузить',
+    'nft.create_via_wallet': 'Создать NFT через кошелек',
+    'nft.royalty_note': '* Роялти: 5% от продаж',
+    'nft.connect_first': 'Сначала подключите кошелек!',
+    'nft.success_created': 'NFT успешно создан! Hash:',
+    'nft.error_creating': 'Ошибка при создании NFT:',
+    'nft.unknown_error': 'Неизвестная ошибка',
+    'nft.connect_to_view': 'Подключите кошелек для просмотра NFT',
+    'nft.loading': 'Загрузка NFT...',
+    'nft.your_nfts': 'Ваши NFT',
+    'nft.refresh': 'Обновить',
+    'nft.no_nfts_yet': 'У вас пока нет NFT',
+    'nft.view': 'Просмотр',
+    'nft.transfer': 'Передать',
+    'nft.burn': 'Сжечь',
+    'nft.token_id': 'Token ID:',
+    'nft.collection': 'GUILAND NFT Collection',
+    'nft.quantity': 'Количество:',
+    'nft.wallet_no_transactions': 'Кошелек не поддерживает транзакции',
+    'nft.transfer_success': 'NFT успешно передан!',
+    'nft.transfer_error': 'Ошибка при передаче NFT:',
+    'nft.burn_success': 'NFT успешно сожжен!',
+    'nft.burn_error': 'Ошибка при сжигании NFT:',
+    'nft.load_error': 'Ошибка при загрузке NFT',
+    'nft.token_data_error': 'Ошибка при получении данных токена:',
+    'nft.castle_description': 'Величественный замок в мире GUILAND',
+    'nft.dragon_description': 'Защитник королевства GUILAND',
+    'nft.sword_description': 'Легендарный меч с магическими свойствами',
+    
+    // Common
+    'common.loading': 'Загрузка...',
+    'common.error': 'Ошибка',
+    'common.success': 'Успешно',
+    'common.cancel': 'Отмена',
+    'common.save': 'Сохранить',
+    'common.delete': 'Удалить',
+    'common.edit': 'Редактировать',
+    'common.view': 'Просмотр',
+    'common.back': 'Назад',
+    'common.next': 'Далее',
+    'common.previous': 'Предыдущий',
+    'common.close': 'Закрыть',
+    'common.open': 'Открыть',
+    'common.search': 'Поиск',
+    'common.filter': 'Фильтр',
+    'common.sort': 'Сортировка',
+    'common.refresh': 'Обновить',
+    'common.download': 'Скачать',
+    'common.upload': 'Загрузить',
+    'common.export': 'Экспорт',
+    'common.import': 'Импорт',
+    'common.settings': 'Настройки',
+    'common.help': 'Помощь',
+    'common.about': 'О нас',
+    'common.contact': 'Контакты',
+    'common.privacy': 'Конфиденциальность',
+    'common.terms': 'Условия',
+    'common.language': 'Язык',
+    'common.install': 'Установите',
+    'common.wallet': 'кошелек',
+    'common.and': 'и',
+    'common.page': 'страницу',
+  }
+};
+
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+export function LanguageProvider({ children }: LanguageProviderProps) {
+  const [language, setLanguageState] = useState<Language>('en');
+
+  useEffect(() => {
+    // Загружаем язык из localStorage при инициализации
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ru')) {
+      setLanguageState(savedLanguage);
+    }
+  }, []);
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
+  };
+
+  const t = (key: string): string => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+} 
