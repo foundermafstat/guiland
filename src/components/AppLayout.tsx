@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { Layout, Typography, Button, Space, Dropdown, Tag } from 'antd';
 import { WalletOutlined, DownOutlined, SunOutlined, MoonOutlined, UserOutlined, GlobalOutlined } from '@ant-design/icons';
 import { useWallet } from '@/components/WalletProvider';
@@ -21,6 +21,12 @@ export default function AppLayout({ children, showHeader = true }: AppLayoutProp
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  // Предотвращаем ошибку гидратации
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const walletOptions = [
     { key: 'petra', label: t('wallet.petra'), icon: '🦊' },
@@ -41,11 +47,12 @@ export default function AppLayout({ children, showHeader = true }: AppLayoutProp
   ];
 
   const handleWalletSelect = async (walletKey: string) => {
-    if (walletKey === 'demo') {
-      await connect();
-    } else {
-      // Для реальных кошельков показываем инструкцию
-      console.log(`Установите ${walletKey} кошелек и обновите страницу`);
+    if (!isClient) return;
+    
+    try {
+      await connect(walletKey);
+    } catch (error: any) {
+      console.error('Ошибка подключения кошелька:', error);
     }
   };
 
@@ -111,13 +118,22 @@ export default function AppLayout({ children, showHeader = true }: AppLayoutProp
           top: 0,
           zIndex: 1000
         }}>
-          <Title 
-            level={3} 
-            style={{ color: 'white', margin: 0, cursor: 'pointer' }}
-            onClick={handleLogoClick}
-          >
-            🏰 GUILAND
-          </Title>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <Title 
+              level={3} 
+              style={{ color: 'white', margin: 0, cursor: 'pointer' }}
+              onClick={handleLogoClick}
+            >
+              🏰 GUILAND
+            </Title>
+            <Button 
+              type="text" 
+              style={{ color: 'white' }}
+              onClick={() => router.push('/test-wallets')}
+            >
+              🧪 Тест кошельков
+            </Button>
+          </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {/* Переключатель темы */}

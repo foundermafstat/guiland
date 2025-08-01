@@ -11,6 +11,7 @@ interface WalletContextType {
   walletName: string | null;
   network: 'mainnet' | 'testnet';
   setNetwork: (network: 'mainnet' | 'testnet') => void;
+  checkWalletAvailability: () => { petra: boolean; martian: boolean; pontem: boolean; nightly: boolean };
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -26,33 +27,75 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     return 'testnet';
   });
 
+  // Функция для проверки доступности кошельков
+  const checkWalletAvailability = () => {
+    if (typeof window === 'undefined') {
+      return {
+        petra: false,
+        martian: false,
+        pontem: false,
+        nightly: false,
+      };
+    }
+    
+    return {
+      petra: !!window.petra,
+      martian: !!window.martian,
+      pontem: !!window.pontem,
+      nightly: !!window.nightly,
+    };
+  };
+
   // Проверяем подключение при загрузке
   useEffect(() => {
     const checkConnection = async () => {
+      console.log('=== WalletProvider: проверка подключения ===');
       if (typeof window !== 'undefined') {
         // Восстанавливаем состояние из localStorage
         const savedWalletName = localStorage.getItem('aptos-wallet-name');
         const savedAccountAddress = localStorage.getItem('aptos-account-address');
         
-        if (savedWalletName && savedAccountAddress) {
-          // Проверяем, что кошелек все еще подключен
-          const wallet = window[savedWalletName as keyof Window] as any;
-          if (wallet?.isConnected?.()) {
-            try {
-              const account = await wallet.account();
-              if (account.address === savedAccountAddress) {
-                setAccount({ address: account.address });
-                setConnected(true);
-                setWalletName(savedWalletName);
-                return;
-              }
-            } catch (error) {
-              console.error('Ошибка восстановления подключения:', error);
-            }
-          }
-        }
+        console.log('Сохраненные данные:', { savedWalletName, savedAccountAddress });
+        
+                 if (savedWalletName && savedAccountAddress) {
+           console.log('Пытаемся восстановить подключение:', { savedWalletName, savedAccountAddress });
+           
+           // Проверяем, что адрес не равен адресу контракта
+           if (savedAccountAddress === '0xfd543cfe86eba6cd15d89deccaae5c791db4ca17979bb62703ca6891f87008e4') {
+             console.error('Сохраненный адрес равен адресу контракта! Очищаем localStorage');
+             localStorage.removeItem('aptos-wallet-name');
+             localStorage.removeItem('aptos-account-address');
+             return;
+           }
+           
+           // Проверяем, что кошелек все еще подключен
+           const wallet = window[savedWalletName as keyof Window] as any;
+           console.log('Найден кошелек:', wallet);
+           
+           if (wallet?.isConnected?.()) {
+             try {
+               const account = await wallet.account();
+               console.log('Аккаунт кошелька:', account);
+               
+               if (account.address === savedAccountAddress) {
+                 console.log('Восстанавливаем подключение');
+                 setAccount({ address: account.address });
+                 setConnected(true);
+                 setWalletName(savedWalletName);
+                 return;
+               } else {
+                 console.log('Адрес изменился, очищаем localStorage');
+                 localStorage.removeItem('aptos-wallet-name');
+                 localStorage.removeItem('aptos-account-address');
+               }
+             } catch (error) {
+               console.error('Ошибка восстановления подключения:', error);
+             }
+           }
+         }
         
         // Если восстановление не удалось, очищаем localStorage
+        console.log('Очищаем localStorage');
         localStorage.removeItem('aptos-wallet-name');
         localStorage.removeItem('aptos-account-address');
       }
@@ -62,6 +105,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const connect = async (walletType?: string) => {
+    console.log('=== WalletProvider: connect вызван ===');
+    console.log('walletType:', walletType);
+    
     try {
       if (typeof window === 'undefined') {
         throw new Error('Браузер не поддерживается');
@@ -72,9 +118,14 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
       if (walletType === 'demo') {
         // Демо режим
+        console.log('Подключаемся в демо режиме');
         setConnected(true);
         setAccount({ address: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef' });
         setWalletName('demo');
+        
+        // Сохраняем состояние в localStorage
+        localStorage.setItem('aptos-wallet-name', 'demo');
+        localStorage.setItem('aptos-account-address', '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef');
         return;
       }
 
@@ -93,28 +144,62 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         }
       }
 
+      // Проверяем конкретный кошелек
       wallet = window[selectedWalletName as keyof Window] as any;
 
       if (!wallet) {
-        throw new Error(`Кошелек ${selectedWalletName} не найден`);
+        throw new Error(`Кошелек ${selectedWalletName} не найден. Убедитесь, что расширение установлено и активно.`);
+      }
+
+      // Дополнительные проверки для конкретных кошельков
+      if (selectedWalletName === 'petra' && !window.petra) {
+        throw new Error('Petra кошелек не найден. Убедитесь, что расширение установлено и активно.');
+      }
+      
+      if (selectedWalletName === 'martian' && !window.martian) {
+        throw new Error('Martian кошелек не найден. Убедитесь, что расширение установлено и активно.');
       }
 
       // Подключаемся к кошельку
-      const account = await wallet.connect();
+      console.log(`Пытаемся подключиться к ${selectedWalletName}...`);
       
-      if (!account || !account.address) {
-        throw new Error('Не удалось получить адрес кошелька');
+      let account;
+      try {
+        account = await wallet.connect();
+        console.log('Ответ от кошелька:', account);
+      } catch (connectError: any) {
+        console.error('Ошибка подключения:', connectError);
+        
+        if (connectError.message?.includes('rejected') || connectError.message?.includes('отклонено')) {
+          throw new Error('Подключение отклонено пользователем');
+        }
+        
+        if (connectError.message?.includes('not installed') || connectError.message?.includes('не установлен')) {
+          throw new Error(`Кошелек ${selectedWalletName} не установлен`);
+        }
+        
+        throw new Error(`Ошибка подключения к ${selectedWalletName}: ${connectError.message || 'Неизвестная ошибка'}`);
       }
+      
+             if (!account || !account.address) {
+         throw new Error('Не удалось получить адрес кошелька');
+       }
 
-      setAccount({ address: account.address });
-      setConnected(true);
-      setWalletName(selectedWalletName);
+       // Проверяем, что адрес не равен адресу контракта
+       if (account.address === '0xfd543cfe86eba6cd15d89deccaae5c791db4ca17979bb62703ca6891f87008e4') {
+         throw new Error('Получен адрес контракта вместо адреса кошелька. Проверьте настройки кошелька.');
+       }
 
-      // Сохраняем состояние в localStorage
-      localStorage.setItem('aptos-wallet-name', selectedWalletName);
-      localStorage.setItem('aptos-account-address', account.address);
+       console.log(`Подключен к кошельку ${selectedWalletName}:`, account.address);
+       console.log('Адрес кошелька не равен адресу контракта ✓');
 
-      console.log(`Подключен к кошельку ${selectedWalletName}:`, account.address);
+       setAccount({ address: account.address });
+       setConnected(true);
+       setWalletName(selectedWalletName);
+
+       // Сохраняем состояние в localStorage
+       localStorage.setItem('aptos-wallet-name', selectedWalletName);
+       localStorage.setItem('aptos-account-address', account.address);
 
     } catch (error) {
       console.error('Ошибка подключения кошелька:', error);
@@ -184,7 +269,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       signAndSubmitTransaction,
       walletName,
       network,
-      setNetwork: handleSetNetwork
+      setNetwork: handleSetNetwork,
+      checkWalletAvailability
     }}>
       {children}
     </WalletContext.Provider>

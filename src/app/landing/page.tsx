@@ -161,21 +161,23 @@ export default function LandingPage() {
             >
               {t('landing.start_game')}
             </Button>
-            <Button 
-              type="default" 
-              size="large"
-              icon={<WalletOutlined />}
-              style={{ 
-                height: '50px', 
-                fontSize: '1.1rem',
-                color: 'white',
-                border: '2px solid white',
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)'
-              }}
-            >
-              {t('landing.connect_wallet')}
-            </Button>
+            {connected && (
+              <Button 
+                type="default" 
+                size="large"
+                icon={<WalletOutlined />}
+                style={{ 
+                  height: '50px', 
+                  fontSize: '1.1rem',
+                  color: 'white',
+                  border: '2px solid white',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                {t('landing.connect_wallet')}
+              </Button>
+            )}
           </Space>
         </div>
         
@@ -417,21 +419,23 @@ export default function LandingPage() {
             >
               {t('landing.start_game')}
             </Button>
-            <Button 
-              type="default" 
-              size="large"
-              icon={<ArrowRightOutlined />}
-              style={{ 
-                height: '50px', 
-                fontSize: '1.1rem',
-                color: 'white',
-                border: '2px solid white',
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)'
-              }}
-            >
-              {t('landing.learn_more')}
-            </Button>
+            {connected && (
+              <Button 
+                type="default" 
+                size="large"
+                icon={<ArrowRightOutlined />}
+                style={{ 
+                  height: '50px', 
+                  fontSize: '1.1rem',
+                  color: 'white',
+                  border: '2px solid white',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                {t('landing.learn_more')}
+              </Button>
+            )}
           </Space>
         </div>
       </div>

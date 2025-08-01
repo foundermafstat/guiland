@@ -11,15 +11,21 @@
     "test": "jest",
     "compile": "aptos move compile",
     "test:move": "aptos move test",
-    "deploy": "aptos move publish"
+    "deploy": "aptos move publish --profile testnet",
+    "init": "aptos move run --profile testnet --function-id $CONTRACT_ADDRESS::game_core::initialize",
+    "account:list": "aptos account list --profile testnet",
+    "account:fund": "aptos account fund-with-faucet --profile testnet",
+    "aptos:init": "aptos init --profile testnet --network testnet"
   },
   "dependencies": {
     "next": "^14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@aptos-labs/ts-sdk": "^1.9.0",
+    "@aptos-labs/ts-sdk": "^3.1.3",
+    "@aptos-labs/wallet-adapter-react": "^3.0.6",
+    "@aptos-labs/wallet-adapter-ant-design": "^2.4.7",
     "antd": "^5.12.0",
-    "axios": "^1.6.0",
+    "axios": "^1.9.0",
     "typescript": "^5.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
@@ -37,4 +43,4 @@
   "keywords": ["aptos", "blockchain", "web3", "fullstack"],
   "author": "GUILAND Team",
   "license": "MIT"
-} 
+}

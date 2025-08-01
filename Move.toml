@@ -7,4 +7,9 @@ upgrade_policy = "compatible"
 AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework/", rev = "main" }
 
 [addresses]
-guiland = "_" 
+guiland = "0xfd543cfe86eba6cd15d89deccaae5c791db4ca17979bb62703ca6891f87008e4"
+gui_kingdoms = "0xfd543cfe86eba6cd15d89deccaae5c791db4ca17979bb62703ca6891f87008e4"
+
+[dev-addresses]
+guiland = "0x1"
+gui_kingdoms = "0x1" 

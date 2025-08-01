@@ -1,10 +1,14 @@
+// Временно закомментирован - NFT функциональность интегрирована в game_core.move
+// Старый контракт использует устаревшие модули Aptos Framework
+
+/*
 module guiland::guiland_nft {
+    use std::signer;
     use std::string::{Self, String};
     use std::option::{Self, Option};
     use aptos_framework::account;
     use aptos_framework::timestamp;
     use aptos_framework::coin::{Self, Coin};
-    use aptos_framework::resource_account;
     use aptos_framework::object::{Self, Object, ConstructorRef, ExtendRef, BurnRef};
     use aptos_framework::property_map::{Self, PropertyMap};
     use aptos_framework::transfer_policy::{Self, TransferPolicy, TransferPolicyCapability};
@@ -15,7 +19,7 @@ module guiland::guiland_nft {
     use aptos_framework::royalty::{Self, Royalty};
     use aptos_framework::token::{Self, Token, TokenId, TokenRef, TokenStore};
     use aptos_framework::token_store;
-    use aptos_framework::event::{Self, EventHandle};
+    use aptos_framework::event;
     use aptos_framework::event_store;
 
     /// Error codes
@@ -192,4 +196,5 @@ module guiland::guiland_nft {
     public fun get_token_data(token_id: TokenId): token::TokenData {
         token::get_token_data(token_id)
     }
-} 
+}
+*/ 
