@@ -22,6 +22,7 @@ import { useWallet } from '@/components/WalletProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { useLanguage } from '@/components/LanguageProvider';
 import AppLayout from '@/components/AppLayout';
+import HeroSwiper from '@/components/HeroSwiper';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -86,96 +87,8 @@ export default function HomePage() {
 
   return (
     <AppLayout>
-      {/* Hero Section */}
-      <div 
-        style={{
-          height: 'calc(100vh - 64px)', // Вычитаем высоту хедера
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        <div style={{ 
-          textAlign: 'center', 
-          color: 'white',
-          zIndex: 2
-        }}>
-          <Title level={1} style={{ color: 'white', fontSize: '4rem', marginBottom: '1rem' }}>
-            🏰 GUILAND
-          </Title>
-          <Title level={2} style={{ color: 'white', fontSize: '2rem', marginBottom: '2rem', fontWeight: 300 }}>
-            {t('landing.hero_subtitle')}
-          </Title>
-          <Paragraph style={{ fontSize: '1.2rem', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
-            {t('landing.hero_description')}
-          </Paragraph>
-          <Space size="large">
-            <Button 
-              type="primary" 
-              size="large" 
-              icon={<PlayCircleOutlined />}
-              onClick={() => router.push('/game')}
-              style={{ 
-                height: '50px', 
-                fontSize: '1.1rem',
-                background: 'white',
-                color: '#667eea',
-                border: 'none',
-                boxShadow: '0 8px 32px rgba(255, 255, 255, 0.3)'
-              }}
-            >
-              {t('landing.start_game')}
-            </Button>
-            <Button 
-              type="default" 
-              size="large"
-              icon={<WalletOutlined />}
-              style={{ 
-                height: '50px', 
-                fontSize: '1.1rem',
-                color: 'white',
-                border: '2px solid white',
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)'
-              }}
-            >
-              {t('landing.connect_wallet')}
-            </Button>
-          </Space>
-        </div>
-        
-        {/* Плавающие элементы */}
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '10%',
-          fontSize: '3rem',
-          opacity: 0.3
-        }}>
-          🏰
-        </div>
-        <div style={{
-          position: 'absolute',
-          top: '60%',
-          right: '15%',
-          fontSize: '2rem',
-          opacity: 0.3
-        }}>
-          ⚔️
-        </div>
-        <div style={{
-          position: 'absolute',
-          bottom: '20%',
-          left: '20%',
-          fontSize: '2.5rem',
-          opacity: 0.3
-        }}>
-          🐉
-        </div>
-      </div>
+      {/* Hero Section с Swiper слайдером */}
+      <HeroSwiper />
 
       {/* Статистика */}
       <div style={{ 

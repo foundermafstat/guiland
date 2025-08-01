@@ -1,0 +1,18 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон прозрачный -->
+  
+  <!-- Тень -->
+  <ellipse cx="32" cy="60" rx="12" ry="3" fill="#000000" opacity="0.3"/>
+  
+  <!-- Ствол -->
+  <polygon points="30,40 31,32 33,32 34,40 34,48 30,48" fill="#8B4513"/>
+  
+  <!-- Крона сосны (треугольники) -->
+  <polygon points="32,20 20,32 44,32" fill="#228B22"/>
+  <polygon points="32,24 22,36 42,36" fill="#32CD32"/>
+  <polygon points="32,28 24,40 40,40" fill="#228B22"/>
+  <polygon points="32,32 26,44 38,44" fill="#32CD32"/>
+  
+  <!-- Верхушка -->
+  <polygon points="32,16 28,24 36,24" fill="#228B22"/>
+</svg> 

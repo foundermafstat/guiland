@@ -1,0 +1,26 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Основной цвет камня -->
+  <rect width="32" height="32" fill="#696969"/>
+  
+  <!-- Каменные плитки -->
+  <rect x="0" y="0" width="16" height="16" fill="#808080"/>
+  <rect x="16" y="0" width="16" height="16" fill="#A9A9A9"/>
+  <rect x="0" y="16" width="16" height="16" fill="#A9A9A9"/>
+  <rect x="16" y="16" width="16" height="16" fill="#808080"/>
+  
+  <!-- Границы плиток -->
+  <line x1="16" y1="0" x2="16" y2="32" stroke="#556B2F" stroke-width="1"/>
+  <line x1="0" y1="16" x2="32" y2="16" stroke="#556B2F" stroke-width="1"/>
+  
+  <!-- Детали камней -->
+  <circle cx="8" cy="8" r="1" fill="#556B2F"/>
+  <circle cx="24" cy="8" r="1" fill="#556B2F"/>
+  <circle cx="8" cy="24" r="1" fill="#556B2F"/>
+  <circle cx="24" cy="24" r="1" fill="#556B2F"/>
+  
+  <!-- Трещины в камнях -->
+  <line x1="4" y1="4" x2="12" y2="12" stroke="#556B2F" stroke-width="1"/>
+  <line x1="20" y1="20" x2="28" y2="28" stroke="#556B2F" stroke-width="1"/>
+  <line x1="20" y1="4" x2="28" y2="12" stroke="#556B2F" stroke-width="1"/>
+  <line x1="4" y1="20" x2="12" y2="28" stroke="#556B2F" stroke-width="1"/>
+</svg> 

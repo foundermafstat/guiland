@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Typography, Button, Card, Row, Col, Input, Form, message, Space, Divider, Dropdown, Tag, Spin, Progress, Statistic, List, Avatar, Tabs } from 'antd';
+import { Typography, Button, Card, Row, Col, Input, Form, message, Space, Divider, Dropdown, Tag, Spin, Progress, Statistic, List, Avatar, Tabs, Modal, Select, DatePicker, Popconfirm, Tooltip, Calendar, Badge } from 'antd';
 import { 
   WalletOutlined, 
   DownOutlined, 
@@ -24,6 +24,7 @@ import { useGameContract } from '@/hooks/useGameContract';
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/AppLayout';
 import WalletStatus from '@/components/WalletStatus';
+import GuildLeaderPanel from '@/components/GuildLeaderPanel';
 
 const { Title, Text } = Typography;
 
@@ -42,6 +43,18 @@ interface GameTabsProps {
   loadAllData: () => void;
   getTerrainTypeName: (type: number) => string;
   t: (key: string) => string;
+  isGuildLeader: boolean;
+  playerGuild: any | null;
+  onUpdateGuildName: (newName: string) => Promise<void>;
+  onUpdateTaxRate: (newRate: number) => Promise<void>;
+  onKickMember: (memberId: string) => Promise<void>;
+  onPromoteMember: (memberId: string) => Promise<void>;
+  onDemoteMember: (memberId: string) => Promise<void>;
+  onTransferLeadership: (memberId: string) => Promise<void>;
+  onPostAnnouncement: (announcement: string) => Promise<void>;
+  onCreateEvent: (event: any) => Promise<void>;
+  onDeclareWar: (targetGuildId: string, duration: number) => Promise<void>;
+  onProposeAlliance: (targetGuildId: string, terms: string) => Promise<void>;
 }
 
 function GameTabs({ 
@@ -57,14 +70,26 @@ function GameTabs({
   attackTerritory, 
   loadAllData, 
   getTerrainTypeName, 
-  t 
+  t,
+  isGuildLeader,
+  playerGuild,
+  onUpdateGuildName,
+  onUpdateTaxRate,
+  onKickMember,
+  onPromoteMember,
+  onDemoteMember,
+  onTransferLeadership,
+  onPostAnnouncement,
+  onCreateEvent,
+  onDeclareWar,
+  onProposeAlliance
 }: GameTabsProps) {
   const [guildName, setGuildName] = useState('');
   const [selectedGuildId, setSelectedGuildId] = useState('');
   const [guiAmount, setGuiAmount] = useState('');
   const [treatsAmount, setTreatsAmount] = useState('');
 
-  const items = [
+  const baseItems = [
     {
       key: 'resources',
       label: `💰 ${t('game.resources')}`,
@@ -204,6 +229,56 @@ function GameTabs({
               </Card>
             </Col>
           </Row>
+          
+          {/* Список гильдий */}
+          <Divider />
+          <div style={{ marginTop: 16 }}>
+            <Title level={4}>{t('game.available_guilds')}</Title>
+            <Row gutter={[16, 16]}>
+              {guilds.length > 0 ? (
+                guilds.map((guild) => (
+                  <Col xs={24} sm={12} md={8} lg={6} key={guild.id}>
+                    <Card 
+                      title={guild.name} 
+                      size="small"
+                      extra={
+                        guild.leader === account?.address ? (
+                          <Tag color="gold">👑 {t('guild.leader')}</Tag>
+                        ) : (
+                          <Tag color="blue">{t('guild.member')}</Tag>
+                        )
+                      }
+                    >
+                      <Space direction="vertical" style={{ width: '100%' }}>
+                        <Text>{t('game.level')}: {guild.level}</Text>
+                        <Text>{t('guild.members')}: {guild.members.length}</Text>
+                        <Text>{t('game.leader')}: {guild.leader.slice(0, 8)}...</Text>
+                        <Text>{t('game.treasury')}: {guild.treasury.gui_tokens} GUI</Text>
+                        {guild.leader !== account?.address && (
+                          <Button 
+                            type="primary" 
+                            size="small"
+                            icon={<TeamOutlined />}
+                            onClick={() => joinGuild(guild.id)}
+                            loading={gameLoading}
+                            disabled={player?.guild_id === guild.id}
+                          >
+                            {player?.guild_id === guild.id ? t('game.already_member') : t('game.join')}
+                          </Button>
+                        )}
+                      </Space>
+                    </Card>
+                  </Col>
+                ))
+              ) : (
+                <Col span={24}>
+                  <div style={{ textAlign: 'center', padding: '40px' }}>
+                    <Text type="secondary">{t('game.no_guilds_available')}</Text>
+                  </div>
+                </Col>
+              )}
+            </Row>
+          </div>
         </Card>
       ),
     },
@@ -299,6 +374,70 @@ function GameTabs({
     },
   ];
 
+  // Добавляем таб управления гильдией только для лидеров
+  const guildManagementTab = isGuildLeader && playerGuild ? {
+    key: 'guild_management',
+    label: `👑 ${t('guild.leader_panel')}`,
+    children: (
+      <Card className="card-gradient">
+        <div style={{ marginBottom: 16 }}>
+          <Text type="secondary">
+            💡 {t('guild.manage_guild')}
+          </Text>
+        </div>
+        <GuildLeaderPanel
+          guildData={{
+            id: playerGuild.id,
+            name: playerGuild.name,
+            level: parseInt(playerGuild.level || '1'),
+            memberCount: playerGuild.members?.length || 0,
+            treasury: {
+              gui_tokens: playerGuild.treasury?.gui_tokens || '0',
+              treats: playerGuild.treasury?.treats || '0',
+              crystals: playerGuild.treasury?.crystals || '0',
+              loyalty_points: playerGuild.treasury?.loyalty_points || '0'
+            },
+            territoriesOwned: playerGuild.territories || [],
+            taxRate: parseInt(playerGuild.tax_rate || '0'),
+            creationDate: playerGuild.creation_time ? new Date(parseInt(playerGuild.creation_time) * 1000).toISOString() : new Date().toISOString(),
+            rank: 1 // Пока не реализовано в API
+          }}
+          members={playerGuild.members?.map((memberAddress: string) => ({
+            id: memberAddress,
+            name: memberAddress === account?.address ? t('game.you') : `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`,
+            level: 1, // Пока не реализовано в API
+            contribution: 0, // Пока не реализовано в API
+            joinDate: new Date().toISOString(), // Пока не реализовано в API
+            isOfficer: memberAddress !== playerGuild.leader
+          })) || []}
+          events={[]} // Пока не реализовано в API
+          activities={[
+            {
+              id: '1',
+              type: 'member_joined' as const,
+              description: `${t('guild.guild_created')} ${playerGuild.name}`,
+              timestamp: playerGuild.creation_time ? new Date(parseInt(playerGuild.creation_time) * 1000).toLocaleString() : new Date().toLocaleString(),
+              member: playerGuild.leader
+            }
+          ]}
+          onUpdateGuildName={onUpdateGuildName}
+          onUpdateTaxRate={onUpdateTaxRate}
+          onKickMember={onKickMember}
+          onPromoteMember={onPromoteMember}
+          onDemoteMember={onDemoteMember}
+          onTransferLeadership={onTransferLeadership}
+          onPostAnnouncement={onPostAnnouncement}
+          onCreateEvent={onCreateEvent}
+          onDeclareWar={onDeclareWar}
+          onProposeAlliance={onProposeAlliance}
+        />
+      </Card>
+    ),
+  } : null;
+
+  // Объединяем базовые табы с табом управления гильдией
+  const items = guildManagementTab ? [...baseItems, guildManagementTab] : baseItems;
+
   return (
     <Tabs 
       items={items} 
@@ -337,6 +476,7 @@ export default function GamePage() {
   const { t } = useLanguage();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [testGuildLeader, setTestGuildLeader] = useState(false);
 
   // Принудительная загрузка данных при монтировании компонента
   useEffect(() => {
@@ -375,6 +515,75 @@ export default function GamePage() {
       case 4: return t('game.terrain_port');
       default: return t('game.terrain_unknown');
     }
+  };
+
+  // Получаем данные гильдии игрока
+  const playerGuild = player && player.guild_id ? guilds.find(guild => guild.id === player.guild_id) : null;
+  
+  // Проверяем, является ли игрок лидером гильдии
+  const isGuildLeader = (playerGuild && playerGuild.leader === account?.address) || testGuildLeader;
+
+  // Отладочная информация
+  console.log('=== ОТЛАДКА ГИЛЬДИИ ===');
+  console.log('player:', player);
+  console.log('player.guild_id:', player?.guild_id);
+  console.log('guilds:', guilds);
+  console.log('playerGuild:', playerGuild);
+  console.log('account?.address:', account?.address);
+  console.log('playerGuild?.leader:', playerGuild?.leader);
+  console.log('isGuildLeader:', isGuildLeader);
+  console.log('testGuildLeader:', testGuildLeader);
+  console.log('========================');
+
+  // Обработчики для управления гильдией (заглушки для демонстрации)
+  const handleUpdateGuildName = async (newName: string) => {
+    console.log('Обновление названия гильдии:', newName);
+    message.success(t('guild.update_name') + ' ' + t('common.success'));
+  };
+
+  const handleUpdateTaxRate = async (newRate: number) => {
+    console.log('Обновление налоговой ставки:', newRate);
+    message.success(t('guild.update_tax_rate') + ' ' + t('common.success'));
+  };
+
+  const handleKickMember = async (memberId: string) => {
+    console.log('Исключение участника:', memberId);
+    message.success(t('guild.kick_member') + ' ' + t('common.success'));
+  };
+
+  const handlePromoteMember = async (memberId: string) => {
+    console.log('Повышение участника:', memberId);
+    message.success(t('guild.promote_member') + ' ' + t('common.success'));
+  };
+
+  const handleDemoteMember = async (memberId: string) => {
+    console.log('Понижение участника:', memberId);
+    message.success(t('guild.demote_member') + ' ' + t('common.success'));
+  };
+
+  const handleTransferLeadership = async (memberId: string) => {
+    console.log('Передача лидерства:', memberId);
+    message.success(t('guild.transfer_leadership') + ' ' + t('common.success'));
+  };
+
+  const handlePostAnnouncement = async (announcement: string) => {
+    console.log('Публикация объявления:', announcement);
+    message.success(t('guild.post_announcement') + ' ' + t('common.success'));
+  };
+
+  const handleCreateEvent = async (event: any) => {
+    console.log('Создание события:', event);
+    message.success(t('guild.create_event') + ' ' + t('common.success'));
+  };
+
+  const handleDeclareWar = async (targetGuildId: string, duration: number) => {
+    console.log('Объявление войны:', targetGuildId, duration);
+    message.success(t('guild.declare_war') + ' ' + t('common.success'));
+  };
+
+  const handleProposeAlliance = async (targetGuildId: string, terms: string) => {
+    console.log('Предложение альянса:', targetGuildId, terms);
+    message.success(t('guild.propose_alliance') + ' ' + t('common.success'));
   };
 
   const walletAvailability = isClient ? checkWalletAvailability() : { petra: false, martian: false, pontem: false, nightly: false };
@@ -566,19 +775,21 @@ export default function GamePage() {
             </>
           ) : (
             <>
-              {console.log('ПОКАЗЫВАЕМ ИГРОВОЙ ИНТЕРФЕЙС')}
-              {console.log('Отображаем игровой интерфейс. Состояние:', { 
+              {console.log('=== ОТОБРАЖАЕМ ОСНОВНОЙ ИГРОВОЙ ИНТЕРФЕЙС ===')}
+              {console.log('Состояние:', { 
                 connected, 
                 gameLoading, 
                 player: player ? 'Есть данные' : 'Нет данных',
-                playerDetails: player,
                 playerType: typeof player,
-                playerKeys: player ? Object.keys(player) : 'null'
+                playerKeys: player ? Object.keys(player) : 'null',
+                isGuildLeader,
+                playerGuild: playerGuild ? 'Есть данные гильдии' : 'Нет данных гильдии'
               })}
               {player ? (
-                <div style={{ display: 'flex', gap: '24px', height: 'calc(100vh - 200px)' }}>
-                  {/* Левая панель - Информация об игроке */}
-                  <div style={{ width: '300px', flexShrink: 0 }}>
+                  // Обычный игровой интерфейс
+                  <div style={{ display: 'flex', gap: '24px', height: 'calc(100vh - 200px)' }}>
+                    {/* Левая панель - Информация об игроке */}
+                    <div style={{ width: '300px', flexShrink: 0 }}>
                     <Card className="card-gradient" title={`👤 ${t('game.character')}`} style={{ height: '100%' }}>
                       <div style={{ marginBottom: 16 }}>
                         <Text type="secondary">
@@ -611,7 +822,14 @@ export default function GamePage() {
                           <Text type="secondary">{t('game.equipment')}: {player.equipment?.length || 0}</Text>
                           <br />
                           <Text type="secondary">
-                            {t('game.guild')}: {player.guild_id ? `ID: ${player.guild_id}` : t('game.not_member')}
+                            {t('game.guild')}: {playerGuild ? (
+                              <>
+                                {playerGuild.name}
+                                {playerGuild.leader === account?.address && (
+                                  <Tag color="gold" style={{ marginLeft: 8 }}>👑 {t('guild.leader')}</Tag>
+                                )}
+                              </>
+                            ) : (player.guild_id ? `ID: ${player.guild_id}` : t('game.not_member'))}
                           </Text>
                         </div>
                         
@@ -634,8 +852,22 @@ export default function GamePage() {
                           loading={gameLoading}
                           disabled={parseInt(player.experience) < 1000}
                           block
+                          style={{ marginBottom: 8 }}
                         >
                           {t('game.level_up')}
+                        </Button>
+                        
+                        {/* Кнопка для тестирования интерфейса создателя гильдии */}
+                        <Button 
+                          type="dashed" 
+                          icon={<CrownOutlined />}
+                          onClick={() => {
+                            setTestGuildLeader(!testGuildLeader);
+                            message.info(testGuildLeader ? t('common.normal_mode') : t('guild.leader_panel') + ' (' + t('common.test') + ')');
+                          }}
+                          block
+                        >
+                          🧪 {testGuildLeader ? t('common.normal_mode') : t('guild.leader_panel')} ({t('common.test')})
                         </Button>
                       </Space>
                     </Card>
@@ -657,6 +889,18 @@ export default function GamePage() {
                       loadAllData={loadAllData}
                       getTerrainTypeName={getTerrainTypeName}
                       t={t}
+                      isGuildLeader={isGuildLeader}
+                      playerGuild={playerGuild}
+                      onUpdateGuildName={handleUpdateGuildName}
+                      onUpdateTaxRate={handleUpdateTaxRate}
+                      onKickMember={handleKickMember}
+                      onPromoteMember={handlePromoteMember}
+                      onDemoteMember={handleDemoteMember}
+                      onTransferLeadership={handleTransferLeadership}
+                      onPostAnnouncement={handlePostAnnouncement}
+                      onCreateEvent={handleCreateEvent}
+                      onDeclareWar={handleDeclareWar}
+                      onProposeAlliance={handleProposeAlliance}
                     />
                   </div>
                 </div>

@@ -24,11 +24,11 @@ export default function TestWalletsPage() {
 
   const testWallet = async (walletName: string) => {
     setLoading(true);
-    setTestResults(prev => ({ ...prev, [walletName]: { status: 'testing', message: 'Тестирование...' } }));
+    setTestResults((prev: any) => ({ ...prev, [walletName]: { status: 'testing', message: 'Тестирование...' } }));
     
     try {
       await connect(walletName);
-      setTestResults(prev => ({ 
+      setTestResults((prev: any) => ({ 
         ...prev, 
         [walletName]: { 
           status: 'success', 
@@ -36,7 +36,7 @@ export default function TestWalletsPage() {
         } 
       }));
     } catch (error: any) {
-      setTestResults(prev => ({ 
+      setTestResults((prev: any) => ({ 
         ...prev, 
         [walletName]: { 
           status: 'error', 

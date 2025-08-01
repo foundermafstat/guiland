@@ -1,0 +1,32 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон прозрачный -->
+  
+  <!-- Тень -->
+  <ellipse cx="32" cy="60" rx="8" ry="2" fill="#000000" opacity="0.3"/>
+  
+  <!-- Земля -->
+  <rect x="24" y="48" width="16" height="8" fill="#8B4513"/>
+  
+  <!-- Стебли -->
+  <line x1="28" y1="48" x2="28" y2="36" stroke="#228B22" stroke-width="2"/>
+  <line x1="32" y1="48" x2="32" y2="36" stroke="#228B22" stroke-width="2"/>
+  <line x1="36" y1="48" x2="36" y2="36" stroke="#228B22" stroke-width="2"/>
+  
+  <!-- Колосья -->
+  <ellipse cx="28" cy="34" rx="3" ry="6" fill="#FFD700"/>
+  <ellipse cx="32" cy="34" rx="3" ry="6" fill="#FFD700"/>
+  <ellipse cx="36" cy="34" rx="3" ry="6" fill="#FFD700"/>
+  
+  <!-- Детали колосьев -->
+  <line x1="26" y1="30" x2="30" y2="30" stroke="#DAA520" stroke-width="1"/>
+  <line x1="30" y1="30" x2="34" y2="30" stroke="#DAA520" stroke-width="1"/>
+  <line x1="34" y1="30" x2="38" y2="30" stroke="#DAA520" stroke-width="1"/>
+  
+  <line x1="26" y1="32" x2="30" y2="32" stroke="#DAA520" stroke-width="1"/>
+  <line x1="30" y1="32" x2="34" y2="32" stroke="#DAA520" stroke-width="1"/>
+  <line x1="34" y1="32" x2="38" y2="32" stroke="#DAA520" stroke-width="1"/>
+  
+  <line x1="26" y1="34" x2="30" y2="34" stroke="#DAA520" stroke-width="1"/>
+  <line x1="30" y1="34" x2="34" y2="34" stroke="#DAA520" stroke-width="1"/>
+  <line x1="34" y1="34" x2="38" y2="34" stroke="#DAA520" stroke-width="1"/>
+</svg> 

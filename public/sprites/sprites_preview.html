@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUILAND - Просмотр спрайтов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2c3e50;
+            color: white;
+            margin: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #ecf0f1;
+        }
+        .category {
+            margin: 30px 0;
+            padding: 20px;
+            background: #34495e;
+            border-radius: 10px;
+        }
+        .category h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .sprites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .sprite-item {
+            text-align: center;
+            padding: 15px;
+            background: #2c3e50;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+        }
+        .sprite-item img {
+            width: 64px;
+            height: 64px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            background: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%) 50% / 8px 8px;
+        }
+        .sprite-item .name {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #bdc3c7;
+        }
+        .texture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .texture-item {
+            text-align: center;
+            padding: 10px;
+            background: #2c3e50;
+            border-radius: 6px;
+            border: 1px solid #3498db;
+        }
+        .texture-item img {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #7f8c8d;
+            border-radius: 2px;
+        }
+        .texture-item .name {
+            margin-top: 8px;
+            font-size: 10px;
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏰 GUILAND - Набор спрайтов</h1>
+        
+        <div class="category">
+            <h2>🏠 Архитектура</h2>
+            <div class="sprites-grid">
+                <div class="sprite-item">
+                    <img src="house_farm_small.svg" alt="Малый фермерский дом">
+                    <div class="name">house_farm_small.svg</div>
+                </div>
+                <div class="sprite-item">
+                    <img src="house_farm_large.svg" alt="Большой фермерский дом">
+                    <div class="name">house_farm_large.svg</div>
+                </div>
+                <div class="sprite-item">
+                    <img src="windmill.svg" alt="Мельница">
+                    <div class="name">windmill.svg</div>
+                </div>
+                <div class="sprite-item">
+                    <img src="well.svg" alt="Колодец">
+                    <div class="name">well.svg</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>🌳 Растительность</h2>
+            <div class="sprites-grid">
+                <div class="sprite-item">
+                    <img src="tree_oak_large.svg" alt="Дуб">
+                    <div class="name">tree_oak_large.svg</div>
+                </div>
+                <div class="sprite-item">
+                    <img src="tree_pine_tall.svg" alt="Сосна">
+                    <div class="name">tree_pine_tall.svg</div>
+                </div>
+                <div class="sprite-item">
+                    <img src="crop_ready.svg" alt="Созревший урожай">
+                    <div class="name">crop_ready.svg</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>🔥 Мелкие объекты</h2>
+            <div class="sprites-grid">
+                <div class="sprite-item">
+                    <img src="campfire_lit.svg" alt="Горящий костер">
+                    <div class="name">campfire_lit.svg</div>
+                </div>
+                <div class="sprite-item">
+                    <img src="barrel_wood.svg" alt="Деревянная бочка">
+                    <div class="name">barrel_wood.svg</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>🧱 Текстуры</h2>
+            <div class="texture-grid">
+                <div class="texture-item">
+                    <img src="grass_tile.svg" alt="Трава">
+                    <div class="name">grass_tile.svg</div>
+                </div>
+                <div class="texture-item">
+                    <img src="water_tile.svg" alt="Вода">
+                    <div class="name">water_tile.svg</div>
+                </div>
+                <div class="texture-item">
+                    <img src="dirt_tile.svg" alt="Земля">
+                    <div class="name">dirt_tile.svg</div>
+                </div>
+                <div class="texture-item">
+                    <img src="stone_floor.svg" alt="Каменный пол">
+                    <div class="name">stone_floor.svg</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>📋 Инструкции по использованию</h2>
+            <ul>
+                <li><strong>Спрайты объектов:</strong> 64x64 пикселя, прозрачный фон</li>
+                <li><strong>Текстуры:</strong> 32x32 пикселя, бесшовные</li>
+                <li><strong>Стиль:</strong> Пиксель-арт, изометрический вид</li>
+                <li><strong>Цветовая палитра:</strong> Природные тона, совместимые между собой</li>
+            </ul>
+            
+            <h3>Для конвертации в PNG:</h3>
+            <p>Используйте онлайн конвертеры SVG в PNG или графические редакторы для экспорта спрайтов в нужном размере.</p>
+            
+            <h3>Дополнительные спрайты для создания:</h3>
+            <ul>
+                <li>shed.svg - сарай</li>
+                <li>barn.svg - амбар</li>
+                <li>wooden_fence.svg - деревянный забор</li>
+                <li>bush_flower_blue.svg - куст с синими цветами</li>
+                <li>bush_flower_white.svg - куст с белыми цветами</li>
+                <li>grass_patch_01.svg - участок травы</li>
+                <li>crop_early.svg, crop_mid.svg - стадии роста урожая</li>
+                <li>campfire_extinct.svg - потухший костер</li>
+                <li>hay_stack.svg - стог сена</li>
+                <li>crate_closed.svg, crate_open.svg - ящики</li>
+                <li>signpost.svg - указатель</li>
+                <li>bench_wood.svg - деревянная скамейка</li>
+                <li>pathway_stone.svg - каменная дорожка</li>
+                <li>toolbox.svg - ящик с инструментами</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html> 

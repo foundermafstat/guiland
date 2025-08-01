@@ -1,0 +1,25 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Основной цвет воды -->
+  <rect width="32" height="32" fill="#4682B4"/>
+  
+  <!-- Вариации цвета воды -->
+  <rect x="0" y="0" width="8" height="8" fill="#5F9EA0"/>
+  <rect x="8" y="8" width="8" height="8" fill="#4169E1"/>
+  <rect x="16" y="0" width="8" height="8" fill="#5F9EA0"/>
+  <rect x="24" y="8" width="8" height="8" fill="#4169E1"/>
+  <rect x="0" y="16" width="8" height="8" fill="#4169E1"/>
+  <rect x="8" y="24" width="8" height="8" fill="#5F9EA0"/>
+  <rect x="16" y="16" width="8" height="8" fill="#4169E1"/>
+  <rect x="24" y="24" width="8" height="8" fill="#5F9EA0"/>
+  
+  <!-- Волны -->
+  <path d="M 2,8 Q 8,6 16,8 Q 24,10 30,8" stroke="#87CEEB" stroke-width="1" fill="none"/>
+  <path d="M 2,16 Q 8,14 16,16 Q 24,18 30,16" stroke="#87CEEB" stroke-width="1" fill="none"/>
+  <path d="M 2,24 Q 8,22 16,24 Q 24,26 30,24" stroke="#87CEEB" stroke-width="1" fill="none"/>
+  
+  <!-- Блики -->
+  <circle cx="6" cy="6" r="1" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="18" cy="10" r="1" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="26" cy="18" r="1" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="10" cy="22" r="1" fill="#FFFFFF" opacity="0.6"/>
+</svg> 

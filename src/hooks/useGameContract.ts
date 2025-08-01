@@ -486,23 +486,24 @@ export function useGameContract() {
   // Загрузка данных гильдий
   const loadGuildsData = useCallback(async () => {
     try {
-      const response = await fetch(`/api/aptos/view`, {
+      // Сначала загружаем статистику игры
+      const statsResponse = await fetch(`/api/aptos/view`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-                 body: JSON.stringify({
-           function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_game_stats`,
-           type_arguments: [],
-           arguments: [],
-         }),
+        body: JSON.stringify({
+          function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_game_stats`,
+          type_arguments: [],
+          arguments: [],
+        }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Статистика игры данные:', data);
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        console.log('Статистика игры данные:', statsData);
         
-        const resultData = data.result || data.data || data;
-        if (resultData && Array.isArray(resultData) && resultData.length >= 3) {
-          const [totalPlayers, totalGuilds, paused] = resultData;
+        const statsResultData = statsData.result || statsData.data || statsData;
+        if (statsResultData && Array.isArray(statsResultData) && statsResultData.length >= 3) {
+          const [totalPlayers, totalGuilds, paused] = statsResultData;
         
           setGameStats({
             total_players: totalPlayers.toString(),
@@ -510,12 +511,56 @@ export function useGameContract() {
             paused,
           });
 
-          // Загружаем информацию о гильдиях (нужно добавить view функцию)
-          // setGuilds(guildsData);
+          // Загружаем информацию о гильдиях
+          const totalGuildsNum = parseInt(totalGuilds.toString());
+          const guildsData: Guild[] = [];
+          
+          for (let i = 1; i <= totalGuildsNum; i++) {
+            try {
+              const guildResponse = await fetch(`/api/aptos/view`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_guild_info`,
+                  type_arguments: [],
+                  arguments: [i.toString()],
+                }),
+              });
+
+              if (guildResponse.ok) {
+                const guildData = await guildResponse.json();
+                console.log(`Данные гильдии ${i}:`, guildData);
+                
+                const guildResultData = guildData.result || guildData.data || guildData;
+                if (guildResultData && Array.isArray(guildResultData) && guildResultData.length >= 5) {
+                  const [name, leader, memberCount, treasury, level] = guildResultData;
+                  
+                  guildsData.push({
+                    id: i.toString(),
+                    name: name,
+                    leader: leader,
+                    members: [], // Пока не загружаем список участников
+                    treasury: treasury,
+                    territories: [], // Пока не загружаем список территорий
+                    level: level.toString(),
+                    creation_time: '0', // Пока не доступно в API
+                    tax_rate: '0', // Пока не доступно в API
+                  });
+                }
+              }
+              
+              // Добавляем небольшую задержку между запросами
+              await new Promise(resolve => setTimeout(resolve, 200));
+            } catch (error) {
+              console.error(`Ошибка загрузки гильдии ${i}:`, error);
+            }
+          }
+          
+          setGuilds(guildsData);
         }
       }
     } catch (error) {
-      console.error('Ошибка загрузки статистики игры:', error);
+      console.error('Ошибка загрузки данных гильдий:', error);
     }
   }, []);
 

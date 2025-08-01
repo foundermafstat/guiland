@@ -1,0 +1,29 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон прозрачный -->
+  
+  <!-- Тень -->
+  <ellipse cx="32" cy="60" rx="20" ry="4" fill="#000000" opacity="0.3"/>
+  
+  <!-- Основание мельницы -->
+  <polygon points="12,40 20,32 44,32 52,40 52,48 12,48" fill="#8B4513"/>
+  
+  <!-- Стены мельницы -->
+  <polygon points="16,36 24,32 40,32 48,36 48,44 16,44" fill="#DEB887"/>
+  
+  <!-- Крыша -->
+  <polygon points="20,32 32,24 44,32 40,32 24,32" fill="#8B4513"/>
+  
+  <!-- Лопасти мельницы -->
+  <rect x="30" y="20" width="4" height="16" fill="#8B4513"/>
+  <rect x="20" y="30" width="16" height="4" fill="#8B4513"/>
+  
+  <!-- Центр лопастей -->
+  <circle cx="32" cy="28" r="3" fill="#654321"/>
+  
+  <!-- Дверь -->
+  <rect x="28" y="40" width="8" height="8" fill="#654321"/>
+  
+  <!-- Окно -->
+  <rect x="34" y="36" width="6" height="4" fill="#87CEEB"/>
+  <rect x="35" y="37" width="4" height="2" fill="#FFFFFF"/>
+</svg> 

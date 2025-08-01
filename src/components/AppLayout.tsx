@@ -126,13 +126,38 @@ export default function AppLayout({ children, showHeader = true }: AppLayoutProp
             >
               🏰 GUILAND
             </Title>
-            <Button 
-              type="text" 
-              style={{ color: 'white' }}
-              onClick={() => router.push('/test-wallets')}
-            >
-              🧪 Тест кошельков
-            </Button>
+            
+            {/* Навигационное меню */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Button 
+                type="text" 
+                style={{ color: 'white' }}
+                onClick={() => router.push('/')}
+              >
+                {t('header.home')}
+              </Button>
+              <Button 
+                type="text" 
+                style={{ color: 'white' }}
+                onClick={() => router.push('/game')}
+              >
+                🎮 {t('header.game')}
+              </Button>
+              <Button 
+                type="text" 
+                style={{ color: 'white' }}
+                onClick={() => router.push('/scene-generator')}
+              >
+                🎨 {t('header.scene_generator')}
+              </Button>
+              <Button 
+                type="text" 
+                style={{ color: 'white' }}
+                onClick={() => router.push('/test-wallets')}
+              >
+                🧪 {t('header.test_wallets')}
+              </Button>
+            </div>
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -173,7 +198,7 @@ export default function AppLayout({ children, showHeader = true }: AppLayoutProp
                   {account?.address?.slice(0, 6)}...{account?.address?.slice(-4)}
                 </Text>
                 <Tag color="green" style={{ margin: 0 }}>
-                  {walletName === 'demo' ? 'Демо' : walletName}
+                  {walletName === 'demo' ? t('header.demo_mode') : walletName}
                 </Tag>
                 <Button 
                   type="text" 
